@@ -55,7 +55,7 @@ export default function AssignTaskList() {
             {/* Assigned User */}
             <div className="col-span-2 flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium">
-                {task.assignedTo?.username[0]}
+                {task.assignedTo?.username[0].toUpperCase()}
               </div>
               <span>{task.assignedTo?.username}</span>
             </div>

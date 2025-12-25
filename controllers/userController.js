@@ -1,6 +1,7 @@
 const userModel = require('../models/userModel')
-const {createJwtToken , createRefreshToken} = require("../utils/auth")
+const {createJwtToken , createRefreshToken ,verifyAccessToken} = require("../utils/auth")
 const bcrypt = require("bcrypt")
+const {createLoginOtp} = require("../utils/loginOtp")
 
 const addUser = async (req ,res) =>{
     try{
@@ -118,4 +119,42 @@ const getLimitedUser = async (req ,res) =>{
     catch(err) { console.log("Error occured while pagination"); }
 }
 
-module.exports = {addUser , login , userGetById , logoutAction ,getAllUsers , updateRole , getLimitedUser}
+const generateOtp = async (req, res) =>{
+    const email = req.body.email;
+    const user = await userModel.findOne({email})
+    if(!user) res.status(404).json({msg : "User not Found!!"}) 
+    
+    const loginOtp = Math.floor(Math.random()*1000 + 999);
+    await createLoginOtp(user , loginOtp);
+    user.loginOtp = loginOtp;
+    await user.save();
+    res.status(200).json({
+        msg : "Otp sent to your Mobile Number..",
+        data : user
+    });  
+}
+
+const loginWithOtp = async (req ,res ) =>{
+    const {loginOtp , mobile} = req.body;
+    const verifyUser = await userModel.findOne({mobile})
+    if(!verifyUser) res.status(404).json({msg : "not found"})
+    else
+    {
+        if(loginOtp != verifyUser.loginOtp)
+        {
+            res.status(402).json({
+                msg: "invalid Otp.."
+            })
+        }
+        else
+        {
+            res.status(200).json({
+                msg : "otp match"
+            })
+        }
+    }
+}
+
+module.exports = {addUser , login , userGetById , logoutAction ,getAllUsers , updateRole , getLimitedUser,
+                  generateOtp , loginWithOtp
+}

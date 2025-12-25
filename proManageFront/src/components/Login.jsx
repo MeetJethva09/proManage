@@ -149,7 +149,8 @@ export const Login = () => {
           Don't have an account?{" "}
           <Link to="/signup" className="text-indigo-600 hover:underline">
             Signup
-          </Link>
+          </Link> <br />OR <br />
+          <Link to='/loginwithotp' className='text-red-500 '>Login with Otp</Link>
         </p>
 
         </div>  

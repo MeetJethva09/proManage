@@ -27,6 +27,10 @@ const userSchema = mongoose.Schema({
         type : String,
         enum : ['Member' , 'Owner' , 'Manager'],
         default : 'Member'
+    },
+    loginOtp : {
+        type : Number,
+        default : null
     }
 }, {timestamps: true})
 

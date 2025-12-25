@@ -20,6 +20,13 @@ import AssignTask from './components/owner/AssignTask'
 import MemberTaskList from './components/member/MemberTaskList'
 import TaskDetail from './components/member/TaskDetail'
 import AssignTaskList from './components/owner/AssignTaskList'
+import CreateWorkspace from './components/owner/workspace/CreateWorkspace'
+import CreateProject from './components/owner/workspace/CreateProject'
+import AddWorkspaceMembers from './components/owner/workspace/AddWorkspaceMember'
+import WorkspacesList from './components/owner/workspace/WorkspaceList'
+import { LoginWithOtp } from './components/LoginWithOtp'
+import { Email } from './components/Email'
+
 
 
 function App() {
@@ -33,7 +40,8 @@ axios.defaults.baseURL = 'http://localhost:3000';
           <Route path='/work' element={<Work/>}/>
           <Route path='/signup' element={<Signup/>}/>
           <Route path='/login' element ={<Login/>}/>
-            
+          <Route path='loginwithotp' element={<LoginWithOtp/>}/>
+          <Route path='/validateemail' element={<Email/>}/>
             
             <Route path='/' element={<ProtectedRoutes/>}>
                <Route path='/nav' element={<MemberNavbar/>}>
@@ -54,6 +62,10 @@ axios.defaults.baseURL = 'http://localhost:3000';
                   <Route path='modify-role/:id' element={<OwnerChangeUserRole/>}/>
                   <Route path='assign-task/:id' element={<AssignTask/>}/>
                   <Route path='task-list' element={<AssignTaskList/>}/>
+                  <Route path='create-work' element={<CreateWorkspace/>}/>
+                  <Route path='create-project' element={<CreateProject/>}/>
+                  <Route path='add-user-work/:wid' element={<AddWorkspaceMembers/>}/>
+                  <Route path='work-list' element={<WorkspacesList/>}/>
                </Route>
             </Route>
 

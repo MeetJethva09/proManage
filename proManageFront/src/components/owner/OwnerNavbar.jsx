@@ -38,17 +38,14 @@ useEffect(()=>{
           <Link to={'/navo/owner-dashboard'} className="cursor-pointer hover:text-slate-900">
             Overview
           </Link>
-          <span className="cursor-pointer hover:text-slate-900">
-            Analytics
-          </span>
-          <span className="cursor-pointer hover:text-slate-900">
-            Workspaces
-          </span>
           <Link to={'/navo/all-users'} className="cursor-pointer hover:text-slate-900">
             Users
           </Link>
           <Link to={'/navo/task-list'} className="cursor-pointer hover:text-slate-900">
             Tasks
+          </Link>
+          <Link to={'/navo/work-list'} className="cursor-pointer hover:text-slate-900">
+            Workspaces
           </Link>
         </nav>
       </div>

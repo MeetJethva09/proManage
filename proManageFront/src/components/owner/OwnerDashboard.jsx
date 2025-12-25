@@ -5,11 +5,17 @@ import { Outlet } from "react-router-dom";
 export default function OwnerDashboard() {
    const [user , setUser] = useState([]);
    const [recentUsers , setRecentUsers] = useState([]);
+   const [workspace , setWorkspace] = useState([])
+   const [limitWorkspace , setLimitWorkspace] = useState([])
     const getAllUser = async () =>{
       const res = await axios.get("/user/getallusers");
       const res2 = await axios.get("/user/recentuser");
+      const workspaces = await axios.get("/workspace/allworkspaces");
+      const workspacesLimit = await axios.get("/workspace/limitworkspace");
       setUser(res.data.data);
       setRecentUsers(res2.data.data);
+      setWorkspace(workspaces.data.data);
+      setLimitWorkspace(workspacesLimit.data.data);
     }
 
   useEffect(()=>{
@@ -25,7 +31,7 @@ export default function OwnerDashboard() {
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { label: "Total Users", value :  user.length},
-          { label: "Active Workspaces", value: "6" },
+          { label: "Active Workspaces", value: workspace.length },
           { label: "Projects", value: "42" },
           { label: "Monthly Growth", value: "+18%" },
         ].map((item, i) => (
@@ -105,16 +111,12 @@ export default function OwnerDashboard() {
           <p className="font-medium mb-4">Workspaces</p>
 
           <div className="space-y-3 text-sm">
-            {[
-              "Backend Core",
-              "Mobile App",
-              "Internal Tools",
-            ].map((ws, i) => (
+            {limitWorkspace.map((w, i) => (
               <div
                 key={i}
                 className="flex justify-between items-center p-3 rounded border hover:bg-slate-50"
               >
-                <span>{ws}</span>
+                <span>{w.workspaceName}</span>
                 <span className="text-xs text-slate-500">
                   Active
                 </span>

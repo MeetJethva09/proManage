@@ -26,4 +26,9 @@ const createRefreshToken =  (user) =>{
     return refreshToken;
 }
 
-module.exports = {createJwtToken , createRefreshToken}
+const verifyAccessToken = (token) =>{
+    const decode = jwt.verify(token , process.env.JWT_SECRET);
+    return decode;
+}
+
+module.exports = {createJwtToken , createRefreshToken , verifyAccessToken}
