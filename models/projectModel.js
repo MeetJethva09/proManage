@@ -16,14 +16,21 @@ const projectSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : "workspaces"
     },
-    members : [{
+    manager : {
       type : mongoose.Schema.Types.ObjectId,
       ref : "users"
-    }], 
+    }, 
     deadline : {
-        type : String,
+        type : Date,
         required : true
-    }
+    },
+    members : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "users",
+            default : null
+        }
+    ]
 }, {timestamps : true})
 
 module.exports = mongoose.model("project" , projectSchema);

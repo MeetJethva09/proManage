@@ -1,60 +1,130 @@
-import { Outlet } from "react-router-dom";
-
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function ManagerNavbar() {
+    const navigate = useNavigate()
+    const [user,setUser] = useState({});
+    const [openMenu, setOpenMenu] = useState(false);
+
+    const getData = async () =>{
+      const res = await axios.get("/user/getbyid/" + localStorage.getItem('id'))
+      setUser(res.data.data);
+    }
+
+    const logoutAction = async () =>{
+              localStorage.clear();
+              try{
+                  const res = await axios.get("/user/logout" , {withCredentials:true});
+                  navigate("/login")
+              }
+              catch(err)
+              {
+                console.log("Error occured while logouot..",err)
+              }
+            }
+
+useEffect(()=>{
+  getData()
+},[])
+
   return (
     <>
-    <header className="w-full h-14 bg-white border-b flex items-center justify-between px-6">
+   <header className="w-full bg-white border-b px-4 sm:px-6">
+  <div className="h-14 flex items-center justify-between">
 
-      {/* Left */}
-      <div className="flex items-center gap-6">
-        <h1 className="text-lg font-semibold">ProManage</h1>
+    {/* Left */}
+    <div className="flex items-center gap-4">
+      <h1 className="text-lg font-semibold">ProManage</h1>
 
-        <nav className="hidden md:flex gap-4 text-sm text-slate-600">
-          <span className="cursor-pointer hover:text-slate-900">
-            Dashboard
-          </span>
-          <span className="cursor-pointer hover:text-slate-900">
-            Projects
-          </span>
-          <span className="cursor-pointer hover:text-slate-900">
-            Tasks
-          </span>
-          <span className="cursor-pointer hover:text-slate-900">
-            Team
-          </span>
-        </nav>
+      {/* Desktop Nav */}
+      <nav className="hidden md:flex gap-4 text-sm text-slate-600">
+        <Link to="/navm/manager-dashboard" className="hover:text-slate-900">
+          Dashboard
+        </Link>
+        <Link to="/navm/manager-project" className="hover:text-slate-900">
+          Projects
+        </Link>
+        <span className="hover:text-slate-900 cursor-pointer">Tasks</span>
+        <span className="hover:text-slate-900 cursor-pointer">Team</span>
+        <Link to="/navm/manager-allmembers" className="hover:text-slate-900">
+          Members
+        </Link>
+      </nav>
+    </div>
+
+    {/* Right */}
+    <div className="flex items-center gap-4 text-sm">
+
+      {/* Hide workspace on mobile */}
+      <div className="hidden sm:flex flex-col text-right">
+        <span className="text-xs text-slate-500">Workspace</span>
+        <span className="font-medium">Backend Core</span>
       </div>
 
-      {/* Right */}
-      <div className="flex items-center gap-6 text-sm">
+      {/* Role */}
+      <span className="hidden sm:inline px-3 py-1 text-xs rounded border">
+        Manager
+      </span>
 
-        {/* Workspace */}
-        <div className="hidden sm:flex flex-col leading-tight text-right">
-          <span className="text-xs text-slate-500">Workspace</span>
-          <span className="font-medium">Backend Core</span>
+      {/* User */}
+      <div className="hidden sm:flex items-center gap-3">
+        <img
+          src="/src/assets/user.png"
+          alt="user"
+          className="w-8 h-8 rounded-full"
+        />
+        <div className="flex flex-col leading-tight">
+          <span className="font-medium">{user.username}</span>
+          <span className="text-xs text-slate-500">{user.email}</span>
         </div>
-
-        {/* Role */}
-        <span className="px-3 py-1 text-xs rounded border text-slate-700">
-          Manager
-        </span>
-
-        {/* User */}
-        <div className="flex items-center gap-3 cursor-pointer">
-          <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium">
-            MJ
-          </div>
-
-          <div className="hidden sm:flex flex-col leading-tight">
-            <span className="font-medium">Meet Jethva</span>
-            <span className="text-xs text-slate-500">
-              manager@email.com
-            </span>
-          </div>
-        </div>
-
+        <button
+          onClick={logoutAction}
+          className="bg-red-200 px-2 py-1 rounded border"
+        >
+          Logout
+        </button>
       </div>
-    </header>
+
+      {/* Mobile Hamburger */}
+      <button
+        onClick={() => setOpenMenu(!openMenu)}
+        className="md:hidden text-xl"
+      >
+        ☰
+      </button>
+    </div>
+  </div>
+
+  {/* Mobile Menu */}
+  {openMenu && (
+    <div className="md:hidden border-t bg-white py-3 space-y-2 text-sm">
+      <Link to="/navm/manager-dashboard" className="block px-4">
+        Dashboard
+      </Link>
+      <Link to="/navm/manager-project" className="block px-4">
+        Projects
+      </Link>
+      <Link to="/navm/manager-allmembers" className="block px-4">
+        Members
+      </Link>
+
+      <div className="px-4 pt-2 border-t">
+        <p className="font-medium">{user.username}</p>
+        <p className="text-xs text-slate-500">{user.email}</p>
+        <button
+          onClick={logoutAction}
+          className="mt-2 w-full bg-red-200 py-1 rounded border"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  )}
+</header>
+
+<Outlet />
+
 
     <Outlet/>
     </>

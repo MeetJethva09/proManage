@@ -7,7 +7,7 @@ export default function WorkspacesList() {
 
     const getWorkspaces = async () =>{
         const res = await axios.get("/workspace/allworkspaces")
-        setWorkspaces(res.data.data);
+        setWorkspaces(res.data.data);        
     }
 
 useEffect(()=>{
@@ -46,18 +46,19 @@ useEffect(()=>{
 
             {/* Description */}
             <p className="text-sm text-slate-500 mb-4">
-             {workspace.workspaceDesc}
+             {workspace.workspaceDesc} 
+    
             </p>
 
             {/* Meta */}
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{workspace.members}</span>
-              <span>3 Projects</span>
+              <span>Members : </span>
             </div>
 
             {/* Action */}
             <div className="mt-4 flex justify-end">
-              <Link  to={`/navo/add-user-work/${workspace._id}`} className="text-sm text-indigo-600 hover:underline">
+              <Link  to={`/navo/work-detail/${workspace._id}`} className="text-sm text-indigo-600 hover:underline">
                 Open Workspace →
               </Link>
             </div>

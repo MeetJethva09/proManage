@@ -13,7 +13,12 @@ const workspaceSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'users',
         required : true
-    }
+    },
+    users : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "users",
+        required : true
+    }]
 } , {timestamps : true})
 
 module.exports = mongoose.model('workspace' , workspaceSchema);

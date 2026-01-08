@@ -1,71 +1,126 @@
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams  } from "react-router-dom";
+
 export default function CreateProject() {
+  const wid = useParams().wid;
+  const navigate = useNavigate()
+  const {register , handleSubmit} = useForm({})
+  const [managers , setManagers] = useState([])
+
+  const submitHandler = async(data) =>{
+    data.createdBy = localStorage.getItem("id");
+    data.workspaceId = wid;
+    const res = await axios.post("/project/add-project" , data);
+    console.log(res.data.data);
+    
+  }
+
+  const getManagers = async () =>{
+    const res = await axios.get("/user/managers");
+    setManagers(res.data.data);
+  }
+
+useEffect(()=>{
+    getManagers()
+},[])
+
   return (
-    <div className="min-h-[calc(100vh-56px)] bg-slate-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-lg bg-white rounded-xl border shadow-sm p-6">
+    <div className="min-h-screen m-auto bg-slate-50 p-6">
 
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold">Create Project</h2>
-          <p className="text-sm text-slate-500 mt-1">
-            Create a new project under this workspace
-          </p>
-        </div>
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-slate-900">
+          Create New Project
+        </h1>
+        <p className="text-slate-600 mt-1">
+          Create a project and assign it to a manager
+        </p>
+      </div>
 
-        <form className="space-y-4">
+      {/* Form Card */}
+      <div className="max-w-8xl bg-white rounded-lg shadow-sm border p-6">
 
-          {/* Project Name */}
+        {/* Project Info */}
+        <form onSubmit={handleSubmit(submitHandler)}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
           <div>
-            <label className="text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700">
               Project Name
             </label>
             <input
+            {...register("projectName")}
               type="text"
-              placeholder="e.g. API Optimization"
-              className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+              placeholder="Backend API Revamp"
+              className="mt-2 w-full rounded-md border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
             />
           </div>
 
-          {/* Description */}
           <div>
-            <label className="text-sm font-medium text-slate-700">
-              Description
-            </label>
-            <textarea
-              rows="3"
-              placeholder="Describe project goal"
-              className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
-            />
-          </div>
-
-          {/* Deadline */}
-          <div>
-            <label className="text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700">
               Deadline
             </label>
             <input
+            {...register("deadline")}
               type="date"
-              className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+              className="mt-2 w-full rounded-md border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              className="px-4 py-2 text-sm rounded-md border text-slate-600 hover:bg-slate-100"
-            >
-              Cancel
-            </button>
+        </div>
 
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
-            >
-              Create Project
-            </button>
-          </div>
+        {/* Description */}
+        <div className="mt-6">
+          <label className="block text-sm font-medium text-slate-700">
+            Project Description
+          </label>
+          <textarea
+          {...register("projectDesc")}
+            rows="4"
+            placeholder="Describe project scope and goals..."
+            className="mt-2 w-full rounded-md border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+          />
+        </div>
 
-        </form>
+        {/* Assign Manager */}
+        <div className="mt-6">
+          <label className="block text-sm font-medium text-slate-700">
+            Assign Manager
+          </label>
+
+          <select className="mt-2 w-full rounded-md border px-4 py-2
+           text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+           {...register("manager")}
+           >
+            <option disabled> Select</option>
+            {managers.map((manager)=>{
+                return (
+                     <option value={manager._id}>{manager.username}</option>
+                )
+            })}
+           
+          </select>
+
+          <p className="mt-2 text-xs text-slate-500">
+            Manager will handle team members and tasks
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="mt-8 flex justify-end gap-4">
+          <button onClick={()=> navigate(-1)}  className="px-5 py-2 text-sm rounded-md border text-slate-700 hover:bg-slate-100 transition">
+            Cancel
+          </button>
+
+          <button type={'submit'} className="px-6 py-2 text-sm rounded-md bg-slate-900 text-white hover:bg-slate-800 transition">
+            Create Project
+          </button>
+        </div>
+        
+      </form>
       </div>
     </div>
   );

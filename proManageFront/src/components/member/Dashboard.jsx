@@ -4,19 +4,56 @@ import { useEffect } from 'react';
 
 export const Dashboard = () => {
     const [tasks , setTasks] = useState([]);
+    const [workspaces , setWorkspaces] = useState([])
+    const [recentTasks , setRecentTasks] = useState([])
+    const [activeWorkspace, setActiveWorkspace] = useState(
+    localStorage.getItem("activeWorkspaceId")
+    );
 
-    const getUserTasks = async () =>{
-      const id = localStorage.getItem("id");
-      const res = await axios.get("/task/gettaskbyid/"+id);
-      setTasks(res.data.data);
+    const getDashboardData = async () =>{
+      const [userTaskRes,workspaceRes,recentTaskRes] = await Promise.all([await axios.get("/task/getallusertask/"+localStorage.getItem("id")),
+                                                                                axios.get("/workspace/workspacebyuid/"+localStorage.getItem("id")),
+                                                                                axios.get("/task/gettaskbyid/"+localStorage.getItem("id"))                       
+      ])        
+      setTasks(userTaskRes.data.data)
+      setWorkspaces(workspaceRes.data.data)
+      setRecentTasks(recentTaskRes.data.data)
     }
+    
 
   useEffect(()=>{
-      getUserTasks()
+      getDashboardData()
   },[])
 
   return (
     <div>
+      {/* Workspace Selector */}
+<section className="bg-white border rounded-lg p-4 mb-6">
+  <p className="text-sm font-medium text-slate-700 mb-3">
+    Select Workspace
+  </p>
+
+  <div className="flex flex-wrap gap-3">
+    {workspaces.length <=0 ? <p className='text-sm text-red-500'>No workspace Assigned yet..</p> : workspaces.map((ws) => (
+      <button
+        key={ws._id}
+        onClick={() => {
+          localStorage.setItem("activeWorkspaceId", ws._id);
+          setActiveWorkspace(ws._id);
+        }}
+        className={`px-4 py-2 text-sm rounded-md border transition
+          ${
+            activeWorkspace === ws._id
+              ? "bg-indigo-600 text-white border-indigo-600"
+              : "bg-white text-slate-700 hover:bg-slate-100"
+          }`}
+      >
+        {ws.workspaceName}
+      </button>
+    ))}
+  </div>
+</section>
+
         
                  <main className="p-6 space-y-6 bg-slate-50 min-h-screen">
 
@@ -79,7 +116,7 @@ export const Dashboard = () => {
         <p className="font-medium mb-4">Recent Tasks</p>
 
         <div className="space-y-3 text-sm">
-          {   tasks.length > 0  ? tasks.map((task, i) => (
+          {   recentTasks.length > 0  ? recentTasks.map((task, i) => (
             <div
               key={i}
               className="flex justify-between items-center p-3 border rounded hover:bg-slate-50"

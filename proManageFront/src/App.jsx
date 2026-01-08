@@ -22,16 +22,25 @@ import TaskDetail from './components/member/TaskDetail'
 import AssignTaskList from './components/owner/AssignTaskList'
 import CreateWorkspace from './components/owner/workspace/CreateWorkspace'
 import CreateProject from './components/owner/workspace/CreateProject'
-import AddWorkspaceMembers from './components/owner/workspace/AddWorkspaceMember'
 import WorkspacesList from './components/owner/workspace/WorkspaceList'
 import { LoginWithOtp } from './components/LoginWithOtp'
 import { Email } from './components/Email'
+import ManagerProject from './components/manager/ManagerProject'
+import WorkspaceDetail from './components/owner/workspace/WorkspaceDetail'
+import { AllMembers } from './components/manager/AllMembers'
+import MemberDetail from './components/manager/MemberDetail'
+import AssignTaskToMember from './components/manager/AssignTaskToMember'
+
+
 
 
 
 function App() {
 
 axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.withCredentials = true;
+
+
   
   return (
     <>
@@ -53,6 +62,10 @@ axios.defaults.baseURL = 'http://localhost:3000';
 
                <Route path='/navm' element={<ManagerNavbar/>}>
                   <Route path='manager-dashboard' element={<ManagerDashboard/>}/>
+                  <Route path='manager-project' element={<ManagerProject/>}/>
+                  <Route path='manager-allmembers' element={<AllMembers/>}/>
+                  <Route path='manager-member/:id' element={<MemberDetail/>}/>
+                  <Route path='manager-task-assign/:id' element={<AssignTaskToMember/>}/>
                </Route>
 
                <Route path='/navo' element={<OwnerNavbar/>}>
@@ -63,10 +76,11 @@ axios.defaults.baseURL = 'http://localhost:3000';
                   <Route path='assign-task/:id' element={<AssignTask/>}/>
                   <Route path='task-list' element={<AssignTaskList/>}/>
                   <Route path='create-work' element={<CreateWorkspace/>}/>
-                  <Route path='create-project' element={<CreateProject/>}/>
-                  <Route path='add-user-work/:wid' element={<AddWorkspaceMembers/>}/>
+                  <Route path='create-project/:wid' element={<CreateProject/>}/>
                   <Route path='work-list' element={<WorkspacesList/>}/>
+                  <Route path='work-detail/:wid' element={<WorkspaceDetail/>}/>
                </Route>
+               
             </Route>
 
        </Routes>

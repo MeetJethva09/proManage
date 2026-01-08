@@ -5,13 +5,13 @@ const createJwtToken = (user) =>{
        id : user._id,
        email : user.email,
        mobile : user.mobile,
-       username : user.username
+       role : user.role
     }
     const token = jwt.sign(payLoad , process.env.JWT_SECRET , {
-        expiresIn : '10m'
+        expiresIn : '1d'
     });
 
-    return token;
+    return token; 
 }
 
 const createRefreshToken =  (user) =>{
@@ -21,14 +21,11 @@ const createRefreshToken =  (user) =>{
         mobile : user.mobile
     }
     const refreshToken = jwt.sign(refreshpayLoad , process.env.REFRESH_SECRET , {
-        expiresIn : '7d'
+        expiresIn : '2d'
     });
     return refreshToken;
 }
 
-const verifyAccessToken = (token) =>{
-    const decode = jwt.verify(token , process.env.JWT_SECRET);
-    return decode;
-}
 
-module.exports = {createJwtToken , createRefreshToken , verifyAccessToken}
+
+module.exports = {createJwtToken , createRefreshToken }

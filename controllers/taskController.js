@@ -60,10 +60,23 @@ const getAllTasks = async (req ,res) =>{
     }
 }
 
+const getAllUserTasks = async (req,res) =>{
+    try{
+        const tasks = await taskModel.find({assignedTo : req.params.id})
+        res.status(200).json({msg : "fetch" , data : tasks})
+    }catch(err) {res.status(500).json({msg:"internel server",err})}
+}
+
+const deleteTaskByTaskId = async (req ,res) =>{
+    try{
+        const response = await taskModel.findByIdAndDelete(req.params.id);
+    } catch(err) {res.status(500).json({msg:"internel server error",err})}
+ }
 
 module.exports = {addTask , getTaskByUsers,
     getTaskByTaskId,
     updateTaskByUser,
-    getAllTasks
-
+    getAllTasks,
+    getAllUserTasks,
+    deleteTaskByTaskId
 }  

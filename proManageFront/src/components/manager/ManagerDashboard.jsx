@@ -1,12 +1,32 @@
+import { useEffect, useState } from "react";
+import axios from 'axios'
+
+
 export default function ManagerDashboard() {
+  const [recentTask, setRecentTask] = useState([])
+  const [managerProject, setManagerProject] = useState({})
+  
+  const id = localStorage.getItem("id")
+  const getDashboardData = async ()=>{
+      const [recentTaskRes , managerProjectRes] = await Promise.all([axios.get("/task/gettaskbyid/"+id),
+                                                                     axios.get("/project/manager-project/"+id)
+      ])
+      setRecentTask(recentTaskRes.data.data);
+      setManagerProject(managerProjectRes.data.data);
+      console.log(managerProjectRes.data.data)
+  } 
+useEffect(()=>{
+    getDashboardData()
+},[])
+
   return (
     <main className="p-6 space-y-6 bg-slate-50 min-h-screen">
 
       {/* Top Execution Stats */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: "Active Projects", value: "6" },
-          { label: "Open Tasks", value: "38" },
+          { label: "Active Projects", value : '1' },
+          { label: "Tasks", value: "soon" },
           { label: "Team Members", value: "9" },
           { label: "Due This Week", value: "12" },
         ].map((item, i) => (
@@ -62,22 +82,18 @@ export default function ManagerDashboard() {
 
         {/* Priority Tasks */}
         <div className="bg-white p-6 rounded-lg border">
-          <p className="font-medium mb-4">Priority Tasks</p>
+          <p className="font-medium mb-4">Recent Tasks</p>
 
           <div className="space-y-3 text-sm">
-            {[
-              "API Rate Limiting",
-              "JWT Refresh Flow",
-              "Task Assignment Logic",
-              "Cache Strategy",
-            ].map((task, i) => (
+            {recentTask.map((task, i) => {
+              return (
               <div
                 key={i}
                 className="p-3 border rounded hover:bg-slate-50"
               >
-                {task}
+                {task.taskTitle}
               </div>
-            ))}
+                )})}
           </div>
         </div>
       </section>
@@ -89,22 +105,19 @@ export default function ManagerDashboard() {
         <div className="bg-white p-6 rounded-lg border">
           <p className="font-medium mb-4">Active Projects</p>
 
-          <div className="space-y-3 text-sm">
-            {[
-              ["ProManage API", "In Progress"],
-              ["Auth Service", "Review"],
-              ["Admin Dashboard", "Pending"],
-            ].map(([name, status], i) => (
+          <div className="space-y-2 text-sm">
+           
+          
               <div
-                key={i}
+                
                 className="flex justify-between items-center p-3 border rounded hover:bg-slate-50"
               >
-                <span>{name}</span>
+                <span>{managerProject.projectName}</span>
                 <span className="text-xs border px-2 py-0.5 rounded">
-                  {status}
+                  {managerProject.projectDesc}
                 </span>
               </div>
-            ))}
+          
           </div>
         </div>
 

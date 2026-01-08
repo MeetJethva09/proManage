@@ -7,15 +7,34 @@ export default function OwnerDashboard() {
    const [recentUsers , setRecentUsers] = useState([]);
    const [workspace , setWorkspace] = useState([])
    const [limitWorkspace , setLimitWorkspace] = useState([])
+   const [projects , setProjects] = useState([]);
     const getAllUser = async () =>{
-      const res = await axios.get("/user/getallusers");
-      const res2 = await axios.get("/user/recentuser");
-      const workspaces = await axios.get("/workspace/allworkspaces");
-      const workspacesLimit = await axios.get("/workspace/limitworkspace");
-      setUser(res.data.data);
-      setRecentUsers(res2.data.data);
-      setWorkspace(workspaces.data.data);
-      setLimitWorkspace(workspacesLimit.data.data);
+      try{
+        const [userRes , 
+              recentUserRes ,
+              workspaceRes ,
+              limitWorkspaceRes ,
+              projectRes
+        ] = await Promise.all([
+              axios.get("/user/getallusers"),
+              axios.get("/user/recentuser"),
+              axios.get("/workspace/allworkspaces"),
+              axios.get("/workspace/limitworkspace"),
+              axios.get("/project/all-project")
+        ])
+    
+        setUser(userRes.data.data);
+        setRecentUsers(recentUserRes.data.data);
+        setWorkspace(workspaceRes.data.data);
+        setLimitWorkspace(limitWorkspaceRes.data.data);
+        setProjects(projectRes.data.data)
+      }
+      catch(err) {
+        if(err.status === 403) {
+          const res = await axios.post("/refresh-token")
+          console.log(res.data);
+        }
+      }
     }
 
   useEffect(()=>{
@@ -32,7 +51,7 @@ export default function OwnerDashboard() {
         {[
           { label: "Total Users", value :  user.length},
           { label: "Active Workspaces", value: workspace.length },
-          { label: "Projects", value: "42" },
+          { label: "Projects", value: projects.length },
           { label: "Monthly Growth", value: "+18%" },
         ].map((item, i) => (
           <div

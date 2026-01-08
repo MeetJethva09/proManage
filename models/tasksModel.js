@@ -29,7 +29,11 @@ const taskSchema = new mongoose.Schema({
         type : String,
         enum : ['Pending' , 'Complete'],
         default : "Pending"
-    }
+    },
+    projectId : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "projects"
+    },
 }, {timestamps : true })
 
 module.exports = mongoose.model('tasks' , taskSchema); 

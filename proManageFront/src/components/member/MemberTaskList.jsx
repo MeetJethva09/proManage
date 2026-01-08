@@ -8,7 +8,7 @@ export default function MemberTaskList() {
     const [tasks , setTasks] = useState([]);
     
     const getUserTasks = async () =>{
-        const res = await axios.get("/task/gettaskbyid/"+id);
+        const res = await axios.get("/task/getallusertask/"+id);
         setTasks(res.data.data);
     }
 

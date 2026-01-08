@@ -8,6 +8,7 @@ export const Email = () =>{
     const {register , handleSubmit , formState : {errors}} = useForm({})
 
     const submitHandler = async (data) =>{
+      try{
         const res = await axios.post("/user/validate-user" , data);
         sessionStorage.setItem("mobile" , res.data.data.mobile)
          toast.success(res.data.msg, {
@@ -24,6 +25,20 @@ export const Email = () =>{
                 setTimeout(()=>{
                     navigate("/loginwithotp")
                 },2500)
+              } catch(err)
+              {
+                toast.error(err.response.data.msg, {
+                position: "top-right",
+                autoClose: 2200,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+                });
+              }
     }
 
     const validator = {

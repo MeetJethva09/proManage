@@ -1,4 +1,6 @@
  import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import {useForm} from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
 import { Bounce, toast, ToastContainer } from 'react-toastify';
@@ -6,6 +8,17 @@ import { Bounce, toast, ToastContainer } from 'react-toastify';
 export default function CreateWorkspace() {
     const navigate = useNavigate()
     const {register , handleSubmit} = useForm({})
+    const [users , setUsers] = useState([]);
+
+    const getUsers = async() =>{
+      const res = await axios.get("/user/getallusers");
+      setUsers(res.data.data);
+    }
+
+  useEffect(()=>{
+    getUsers()
+  },[])
+
     const submitHandler = async(data) =>{
         try{
             const id = localStorage.getItem("id");
@@ -99,6 +112,41 @@ export default function CreateWorkspace() {
               className="mt-1 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
           </div>
+
+
+          {/* Select Users */}
+<div>
+  <label className="text-sm font-medium text-slate-700 mb-2 block">
+    Add Members to Workspace
+  </label>
+
+  <div className="max-h-44 overflow-y-auto rounded-md border p-2 space-y-2">
+    {users.length === 0 && (
+      <p className="text-sm text-slate-400">No users found</p>
+    )}
+
+    {users.filter(u=>u.role != 'Owner').map((user) => (
+      <label
+        key={user._id}
+        className="flex items-center gap-2 text-sm cursor-pointer"
+      >
+        <input
+          type="checkbox"
+          value={user._id}
+          {...register("users")}
+          className="accent-indigo-600"
+        />
+        <span className="text-slate-700">
+          {/* {user.name} ({user.email}) */}
+          {user.username} -- {user.role}
+        </span>
+      </label>
+    ))}
+  </div>
+</div>
+
+
+        
 
           {/* Visibility */}
           

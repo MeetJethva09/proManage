@@ -1,5 +1,5 @@
 const userModel = require('../models/userModel')
-const {createJwtToken , createRefreshToken ,verifyAccessToken} = require("../utils/auth")
+const {createJwtToken , createRefreshToken } = require("../utils/auth")
 const bcrypt = require("bcrypt")
 const {createLoginOtp} = require("../utils/loginOtp")
 
@@ -120,41 +120,76 @@ const getLimitedUser = async (req ,res) =>{
 }
 
 const generateOtp = async (req, res) =>{
-    const email = req.body.email;
-    const user = await userModel.findOne({email})
-    if(!user) res.status(404).json({msg : "User not Found!!"}) 
-    
-    const loginOtp = Math.floor(Math.random()*1000 + 999);
-    await createLoginOtp(user , loginOtp);
-    user.loginOtp = loginOtp;
-    await user.save();
-    res.status(200).json({
-        msg : "Otp sent to your Mobile Number..",
-        data : user
-    });  
+    try{
+        const email = req.body.email;
+        const user = await userModel.findOne({email})
+        if(!user) res.status(404).json({msg : "User not Found!!"}) 
+
+        let loginOtp = Math.floor(Math.random()*1000 + 999).toString();
+
+        await createLoginOtp(user , loginOtp);
+        let saltNumber = await bcrypt.genSalt(Number(process.env.SALT))
+        let hashOtp = await bcrypt.hash(loginOtp , saltNumber);
+        user.loginOtp = hashOtp;
+        await user.save();
+        
+        res.status(200).json({
+            msg : "Otp sent to your Mobile Number..",
+            data : user
+        }); 
+    } catch(err) { console.log(err) }
 }
 
 const loginWithOtp = async (req ,res ) =>{
+    try{
     const {loginOtp , mobile} = req.body;
     const verifyUser = await userModel.findOne({mobile})
     if(!verifyUser) res.status(404).json({msg : "not found"})
     else
     {
-        if(loginOtp != verifyUser.loginOtp)
-        {
-            res.status(402).json({
-                msg: "invalid Otp.."
-            })
-        }
+            const otpValidation = await bcrypt.compare(loginOtp , verifyUser.loginOtp);
+            if(otpValidation === false) {
+                res.status(401).json({
+                    msg: "invalid Otp.."
+                })
+            }
         else
-        {
+        { 
+            const accessToken = createJwtToken(verifyUser)
+            res.cookie('authToken' , accessToken , {httpOnly : true , secure : false});
+
+            const refreshToken = createRefreshToken(verifyUser);
+            res.cookie("refreshToken" , refreshToken , {httpOnly : true , secure : false});
             res.status(200).json({
-                msg : "otp match"
+                msg : "Login success..",
+                data : verifyUser
             })
         }
+        }
+    }
+    catch(err)
+    {
+        res.status(500).json({ msg : "internel server error" })
     }
 }
 
+const getManagers = async (req , res) =>{
+    try{
+        const managers = await userModel.find({role : "Manager"}) 
+        res.status(200).json({ msg : "manager fetch" , data : managers});
+    } catch(err) { res.status(500).json({ msg :"internel server erro" ,err  }) }
+
+}
+
+const getMembers = async (req , res) =>{
+    try{
+        const members = await userModel.find({role : "Member"}) 
+        res.status(200).json({ msg : "manager fetch" , data : members});
+    } catch(err) { res.status(500).json({ msg :"internel server erro" ,err  }) }
+
+}
+
+
 module.exports = {addUser , login , userGetById , logoutAction ,getAllUsers , updateRole , getLimitedUser,
-                  generateOtp , loginWithOtp
+                  generateOtp , loginWithOtp , getManagers , getMembers
 }

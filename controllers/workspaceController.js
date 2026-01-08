@@ -1,5 +1,6 @@
 const workspaceModel = require("../models/workspaceModel")
 
+
 const addWorkspace = async (req ,res) =>{
     try{
         const addWorkSpace = await workspaceModel.create(req.body);
@@ -40,7 +41,23 @@ const limitedWorkspace = async (req ,res) =>{
     } catch(err) {console.log("Error occured",err)}
 }
 
+const getWorkspacebyWid = async (req , res) =>{
+    try{
+        const workspace = await workspaceModel.findOne({_id : req.params.wid}).populate('users')
+        res.status(200).json({ msg : "data fetch" , data : workspace })
+    } catch(err) { res.status(500).json({msg:"internel server",err}) }
+}
+
+const getWorkspacebyUserId = async (req ,res) =>{
+    try{
+        const works = await workspaceModel.find({users: req.params.id});
+        res.status(200).json({ msg : "fetch" , data : works })
+    } catch(err) { res.status(500).json({msg:"internel server error",err}) }
+}
+
 module.exports = {addWorkspace,
                  getAllWorkspaces,
-                 limitedWorkspace
+                 limitedWorkspace,
+                 getWorkspacebyWid,
+                 getWorkspacebyUserId
 }

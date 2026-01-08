@@ -27,6 +27,7 @@ export const Login = () => {
                 });
             setTimeout(()=>{
                 if(res.data.data.role === 'Owner') navigate('/navo/owner-dashboard')
+                else if(res.data.data.role === "Manager") navigate("/navm/manager-dashboard")
                 else navigate('/nav/user-dashboard')
             },2000)
         }
@@ -150,7 +151,7 @@ export const Login = () => {
           <Link to="/signup" className="text-indigo-600 hover:underline">
             Signup
           </Link> <br />OR <br />
-          <Link to='/loginwithotp' className='text-red-500 '>Login with Otp</Link>
+          <Link to='/validateemail' className='text-red-500 '>Login with Otp</Link>
         </p>
 
         </div>  

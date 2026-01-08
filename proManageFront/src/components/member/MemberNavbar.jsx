@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function MemberNavbar() {
   const navigate = useNavigate();
   const [user , setUser] = useState({})
+  const [openMenu, setOpenMenu] = useState(false);
 
   const getData = async () =>{
     const res = await axios.get("/user/getbyid/" + localStorage.getItem('id'))
@@ -32,54 +33,112 @@ useEffect(()=>{
 
   return (
     <>
-    <header className="w-full h-14 bg-white border-b flex items-center justify-between px-6">
+   <header className="w-full bg-white border-b px-4 sm:px-6">
+  <div className="h-14 flex items-center justify-between">
 
-      {/* Left */}
-      <div className="flex items-center gap-6">
-        <h1 className="text-lg font-semibold">ProManage</h1>
+    {/* Left */}
+    <div className="flex items-center gap-4">
+      <h1 className="text-lg font-semibold">ProManage</h1>
 
-        <nav className="hidden md:flex gap-4 text-sm text-slate-600">
-          <Link to={`/nav/user-dashboard`} className="cursor-pointer hover:text-slate-900">
-            Overview
-          </Link>
+      {/* Desktop Nav */}
+      <nav className="hidden md:flex gap-4 text-sm text-slate-600">
+        <Link
+          to="/nav/user-dashboard"
+          className="hover:text-slate-900"
+        >
+          Overview
+        </Link>
 
-          <Link to={`/nav/tasks/${user._id}`} className="cursor-pointer hover:text-slate-900">
-            My Tasks
-          </Link>
-          <span className="cursor-pointer hover:text-slate-900">
-            Activity
-          </span>
-        </nav>
+        <Link
+          to={`/nav/tasks/${user._id}`}
+          className="hover:text-slate-900"
+        >
+          My Tasks
+        </Link>
+
+        <span className="hover:text-slate-900 cursor-pointer">
+          Activity
+        </span>
+      </nav>
+    </div>
+
+    {/* Right */}
+    <div className="flex items-center gap-4 text-sm">
+
+      {/* Workspace (hidden on mobile) */}
+      <div className="hidden sm:flex flex-col text-right">
+        <span className="text-xs text-slate-500">Workspace</span>
+        <span className="font-medium">Backend Core</span>
       </div>
 
-      {/* Right */}
-      <div className="flex items-center gap-6 text-sm">
-
-        {/* Workspace */}
-        <div className="hidden sm:flex flex-col leading-tight text-right">
-          <span className="text-xs text-slate-500">Workspace</span>
-          <span className="font-medium">Backend Core</span>
+      {/* Desktop User */}
+      <div className="hidden sm:flex items-center gap-3">
+        <img
+          src="/src/assets/user.png"
+          alt="user"
+          className="w-8 h-8 rounded-full"
+        />
+        <div className="flex flex-col leading-tight">
+          <span className="font-medium">{user.username}</span>
+          <span className="text-xs text-slate-500">
+            {user.email}
+          </span>
         </div>
-
-        {/* User */}
-        <div className="flex items-center gap-3 ">
-          <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium">
-            <img src="/src/assets/user.png" alt="no" height={20} width={20}/>
-          </div>
-
-          <div className="hidden sm:flex flex-col leading-tight">
-            <span className="font-medium">{user.username}</span>
-            <span className="text-xs text-slate-500">
-              {user.email}
-            </span>
-          </div>
-        </div>
-        <button onClick={()=>logoutAction()} className="bg-red-200 p-1 rounded border text-1xl">
+        <button
+          onClick={logoutAction}
+          className="bg-red-200 px-2 py-1 rounded border"
+        >
           Logout
         </button>
-
       </div>
-    </header>
+
+      {/* Mobile Hamburger */}
+      <button
+        onClick={() => setOpenMenu(!openMenu)}
+        className="md:hidden text-xl"
+      >
+        ☰
+      </button>
+    </div>
+  </div>
+
+  {/* Mobile Menu */}
+  {openMenu && (
+    <div className="md:hidden border-t bg-white py-3 space-y-2 text-sm">
+      <Link
+        to="/nav/user-dashboard"
+        className="block px-4"
+      >
+        Overview
+      </Link>
+
+      <Link
+        to={`/nav/tasks/${user._id}`}
+        className="block px-4"
+      >
+        My Tasks
+      </Link>
+
+      <span className="block px-4">
+        Activity
+      </span>
+
+      <div className="px-4 pt-2 border-t">
+        <p className="font-medium">{user.username}</p>
+        <p className="text-xs text-slate-500">{user.email}</p>
+        <button
+          onClick={logoutAction}
+          className="mt-2 w-full bg-red-200 py-1 rounded border"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  )}
+</header>
+
+
+
     <Outlet/>
     </>
   );

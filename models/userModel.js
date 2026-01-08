@@ -29,8 +29,8 @@ const userSchema = mongoose.Schema({
         default : 'Member'
     },
     loginOtp : {
-        type : Number,
-        default : null
+        type : String,
+        default : ''
     }
 }, {timestamps: true})
 
@@ -38,7 +38,7 @@ userSchema.pre("save" , async function(){
     const user = this;
     if(!user.isModified("password")) return;
 
-        const hashPassword = await bcrypt.hash(user.password , 10);
+        const hashPassword = await bcrypt.hash(user.password , process.env.SALT);
         user.password = hashPassword;    
 })
 
