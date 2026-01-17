@@ -13,7 +13,6 @@ export default function ManagerDashboard() {
       ])
       setRecentTask(recentTaskRes.data.data);
       setManagerProject(managerProjectRes.data.data);
-      console.log(managerProjectRes.data.data)
   } 
 useEffect(()=>{
     getDashboardData()
@@ -25,7 +24,7 @@ useEffect(()=>{
       {/* Top Execution Stats */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: "Active Projects", value : '1' },
+          { label: "Active Projects", value : 'soon' },
           { label: "Tasks", value: "soon" },
           { label: "Team Members", value: "9" },
           { label: "Due This Week", value: "12" },
@@ -112,9 +111,9 @@ useEffect(()=>{
                 
                 className="flex justify-between items-center p-3 border rounded hover:bg-slate-50"
               >
-                <span>{managerProject.projectName}</span>
+                <span>{managerProject?.projectName}</span>
                 <span className="text-xs border px-2 py-0.5 rounded">
-                  {managerProject.projectDesc}
+                  {managerProject?.projectDesc}
                 </span>
               </div>
           

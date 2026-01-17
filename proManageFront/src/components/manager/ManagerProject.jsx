@@ -7,6 +7,7 @@ export default function ManagerProject() {
     const [project, setProject] = useState({});
      const [members , setMembers] = useState([])
      const {register , handleSubmit} = useForm({})
+     const [projectTasks , setProjectTasks] = useState([])
      const [projectMembers , setProjectMembers] = useState([])
     
 
@@ -16,7 +17,11 @@ export default function ManagerProject() {
         localStorage.setItem("pid" , res.data.data._id)
         setProject(res.data.data);
         setProjectMembers(res.data.data.members)
-        
+    }
+
+    const getProjectTasks = async () =>{
+        const response = await axios.get("/task/taskbypid/"+localStorage.getItem("pid"));
+        setProjectTasks(response.data.data);
     }
 
      const submitHandler =async (data) =>{
@@ -32,6 +37,7 @@ export default function ManagerProject() {
 useEffect(()=>{
     getProject(),
     getAllMembers()
+    getProjectTasks()
 },[])
 
   return (
@@ -73,12 +79,12 @@ useEffect(()=>{
 
           <div className="rounded-md bg-slate-100 p-4">
             <p className="text-slate-500">Tasks</p>
-            <p className="text-lg font-semibold">18</p>
+            <p className="text-lg font-semibold">{projectTasks.length}</p>
           </div>
 
           <div className="rounded-md bg-slate-100 p-4">
             <p className="text-slate-500">Completed</p>
-            <p className="text-lg font-semibold">10</p>
+            <p className="text-lg font-semibold">{projectTasks.filter(p=>p.status === 'Complete').length}</p>
           </div>
 
           <div className="rounded-md bg-slate-100 p-4">
@@ -120,7 +126,6 @@ useEffect(()=>{
       >
         <input
           type="checkbox"
-          required
           value={member._id}
           {...register("members")}
           className="accent-indigo-600"

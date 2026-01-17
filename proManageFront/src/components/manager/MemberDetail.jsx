@@ -7,14 +7,17 @@ export default function MemberDetail() {
   const navigate = useNavigate()
   const id = useParams().id;
   const [user , setUser] = useState({});
+  const [workspace , setWorkspace] = useState([])
   const [userTasks , setUserTasks] = useState([])
 
   const getDashboardData = async () =>{
-    const [userRes,userTasksRes] = await Promise.all([await axios.get("/user/getbyid/"+id),
-                                                            axios.get("/task/getallusertask/"+id),                                     
+    const [userRes,userTasksRes,workspaceRes] = await Promise.all([await axios.get("/user/getbyid/"+id),
+                                                            axios.get("/task/getallusertask/"+id),
+                                                            axios.get("/workspace/workspacebyuid/"+id)
     ])
     setUser(userRes.data.data);
     setUserTasks(userTasksRes.data.data)
+    setWorkspace(workspaceRes.data.data);
   }
 
    async function deleteTaskAction(id , status){
@@ -131,7 +134,7 @@ export default function MemberDetail() {
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-slate-500">Workspace</span>
-              <span className="font-medium">Backend Core</span>
+              <span className="font-medium">{workspace.map((w) => {return ( w.workspaceName ) })}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500">Role</span>
@@ -150,27 +153,7 @@ export default function MemberDetail() {
 
       </section>
 
-      {/* Recent Activity */}
-      <section className="bg-white rounded-lg border p-5">
-        <h4 className="font-medium mb-4 text-slate-700">
-          Recent Activity
-        </h4>
-
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between">
-            <span>Completed task “JWT Auth Flow”</span>
-            <span className="text-slate-500">2 days ago</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Assigned new task “RBAC Setup”</span>
-            <span className="text-slate-500">5 days ago</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Joined workspace</span>
-            <span className="text-slate-500">1 week ago</span>
-          </div>
-        </div>
-      </section>
+     
                <section className="max-w-5xl mx-auto p-6">
 
       

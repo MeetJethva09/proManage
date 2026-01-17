@@ -7,7 +7,7 @@ export default function WorkspacesList() {
 
     const getWorkspaces = async () =>{
         const res = await axios.get("/workspace/allworkspaces")
-        setWorkspaces(res.data.data);        
+        setWorkspaces(res.data.data);       
     }
 
 useEffect(()=>{
@@ -52,8 +52,7 @@ useEffect(()=>{
 
             {/* Meta */}
             <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>{workspace.members}</span>
-              <span>Members : </span>
+              <span>Members : {workspace.users.length}</span>
             </div>
 
             {/* Action */}

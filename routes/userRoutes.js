@@ -8,7 +8,7 @@ router.post("/add-user" , addUser);
 
 router.post("/login" , login);
 
-router.get("/getbyid/:id" , userGetById);
+router.get("/getbyid/:id" , userGetById); 
 
 router.get("/logout" , logoutAction)
 

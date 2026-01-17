@@ -137,8 +137,6 @@ useEffect(()=>{
   )}
 </header>
 
-
-
     <Outlet/>
     </>
   );

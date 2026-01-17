@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const {addTask,getTaskByUsers,getTaskByTaskId , updateTaskByUser , getAllTasks,
-        getAllUserTasks ,deleteTaskByTaskId
+        getAllUserTasks ,deleteTaskByTaskId , getAllTasksByProjectId
 } = require("../controllers/taskController")
 const {permissionsManager} = require("../middlewares/authCheck")
 
@@ -17,5 +17,7 @@ router.get("/alltask" , getAllTasks);
 router.get("/getallusertask/:id" , getAllUserTasks)
 
 router.delete("/deletetask/:id" , deleteTaskByTaskId);
+
+router.get("/taskbypid/:pid" , getAllTasksByProjectId);
 
 module.exports = router;

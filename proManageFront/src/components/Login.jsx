@@ -12,7 +12,7 @@ export const Login = () => {
     const submitHandler = async (data) =>{
       
         try{
-            const res = await axios.post("/user/login" , data , {withCredentials : true} );
+            const res = await axios.post("/user/login" , data , {withCredentials : true});
              localStorage.setItem('id' , res.data.data._id);
              toast.success(res.data.msg, {
                 position: "top-right",

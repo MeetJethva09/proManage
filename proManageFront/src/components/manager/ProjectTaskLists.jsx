@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react";
-import axios from 'axios'
+import axios from 'axios';
+import React from 'react'
+import { useEffect } from 'react';
+import { useState } from 'react';
 
-export default function AssignTaskList() {
-    const [tasks , setTasks] = useState([]);
+export const ProjectTaskLists = () => {
+     const [projectTasks , setProjectTasks] = useState([])
 
-    const getTasks = async () =>{
-      const res = await axios.get("/task/alltask");
-      setTasks(res.data.data);
+     const getProjectTasks = async () =>{
+        const response = await axios.get("/task/taskbypid/"+localStorage.getItem("pid"));
+        setProjectTasks(response.data.data);
+        console.log(response.data.data);
     }
 
-    useEffect(()=>{
-      getTasks()
-    },[])
-
+useEffect(()=>{
+    getProjectTasks();
+},[])
   return (
-    <section className="max-w-8xl mx-auto p-6">
+    <div>
+        
+             <section className="max-w-6xl mx-auto p-6">
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -29,18 +33,17 @@ export default function AssignTaskList() {
       <div className="bg-white border rounded-lg overflow-hidden">
 
         {/* Table Head */}
-        <div className="grid grid-cols-11 bg-slate-50 px-5 py-3 text-sm font-medium text-slate-600">
+        <div className="grid grid-cols-11 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-600">
           <div className="col-span-3">Task</div>
           <div className="col-span-2">Assigned To</div>
-          <div className="col-span-1">Created By</div>
-          <div className="col-span-1">Priority</div>
+          <div className="col-span-2">Priority</div>
           <div className="col-span-2">Status</div>
           <div className="col-span-2">Due Date</div>
           
         </div>
 
         {/* Row */}
-        {tasks.map((task,i) => (
+        {projectTasks.map((task,i) => (
           <div
             key={i}
             className="grid grid-cols-11 px-4 py-4 border-t text-sm items-center hover:bg-slate-50 transition"
@@ -61,15 +64,8 @@ export default function AssignTaskList() {
               <span>{task.assignedTo?.username}</span>
             </div>
 
-             <div className="col-span-1">
-              <span className="px-2 py-1 rounded text-xs font-medium text-blue-500">
-                {task.createdBy?.username}
-              </span>
-            </div>
-            
-
             {/* Priority */}
-                 <div className="col-span-1">
+                 <div className="col-span-2">
               <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-yellow-700">
                 {task.priority}
               </span>
@@ -87,10 +83,14 @@ export default function AssignTaskList() {
               {new Date(task.dueDate).toLocaleDateString()}
             </div>
 
+          
           </div>
         ))}
         
       </div>
     </section>
   );
+
+    </div>
+  )
 }

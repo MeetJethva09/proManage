@@ -73,10 +73,18 @@ const deleteTaskByTaskId = async (req ,res) =>{
     } catch(err) {res.status(500).json({msg:"internel server error",err})}
  }
 
+ const getAllTasksByProjectId = async (req,res) =>{
+    try{
+        const tasks = await taskModel.find({projectId : req.params.pid}).populate('assignedTo')
+        res.status(200).json({msg : "task fetch." , data : tasks});
+    } catch (err) {res.status(500).json({msg : "internel server" ,err})};
+ }
+
 module.exports = {addTask , getTaskByUsers,
     getTaskByTaskId,
     updateTaskByUser,
     getAllTasks,
     getAllUserTasks,
-    deleteTaskByTaskId
+    deleteTaskByTaskId,
+    getAllTasksByProjectId
 }  

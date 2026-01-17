@@ -8,6 +8,7 @@ const userRoutes = require("./routes/userRoutes")
 const taskRoutes = require("./routes/taskRoutes")
 const workspaceRoutes = require("./routes/workspaceRoutes")
 const projectRoutes = require("./routes/projectRoutes")
+const teamRoutes = require("./routes/teamRoutes")
 const cookieParser = require("cookie-parser")
 //cors setup
 app.use(cors({
@@ -24,6 +25,7 @@ app.use("/user" , userRoutes);
 app.use("/task" , taskRoutes);
 app.use("/workspace",workspaceRoutes);
 app.use("/project",projectRoutes);
+app.use("/team" , teamRoutes);
 
 
 app.listen(process.env.PORT , (req , res) =>{

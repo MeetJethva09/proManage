@@ -26,7 +26,7 @@ const getProjects = async (req , res) =>{
 const getManagerProject = async (req ,res) =>{
     try{
         const pro = await projectModel.findOne({manager : req.params.mid}).populate('members')
-        res.status(200).json({ msg : "fetch" , data : pro })
+        res.status(200).json({ msg : "fetch manager projects" , data : pro })
     }catch(err) {res.status(500).josn({msg : "internel server error "})}
 }
 
