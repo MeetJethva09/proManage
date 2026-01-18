@@ -2,26 +2,23 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {Link} from 'react-router-dom'
+
 export default function ManagerProject() {
 
-    const [project, setProject] = useState({});
+     const [activeProject, setActiveProject] = useState({});
+     const [activeProjectMembers , setActiveProjectMembers] = useState([])
      const [members , setMembers] = useState([])
      const {register , handleSubmit} = useForm({})
      const [projectTasks , setProjectTasks] = useState([])
      const [projectMembers , setProjectMembers] = useState([])
+     const [selectedProject , setSelectedProject] = useState(null)
     
 
     const getProject = async () =>{
         const id = localStorage.getItem("id")
         const res = await axios.get("/project/manager-project/"+id);
         localStorage.setItem("pid" , res.data.data._id)
-        setProject(res.data.data);
-        setProjectMembers(res.data.data.members)
-    }
-
-    const getProjectTasks = async () =>{
-        const response = await axios.get("/task/taskbypid/"+localStorage.getItem("pid"));
-        setProjectTasks(response.data.data);
+        setProjectMembers(res.data.data)    
     }
 
      const submitHandler =async (data) =>{
@@ -35,22 +32,53 @@ export default function ManagerProject() {
     }
 
 useEffect(()=>{
-    getProject(),
-    getAllMembers()
-    getProjectTasks()
-},[])
+                getProject()
+              if (!selectedProject) return;
+              
+              const getProjectTasks = async () => {
+                const response = await axios.get("/task/taskbypid/" + selectedProject)
+                setProjectTasks(response.data.data);
+              };
+
+              const getActiveProject = async()=>{
+                const res = await axios.get("/project/projectbypid/"+selectedProject);
+                setActiveProject(res.data.data)
+                setActiveProjectMembers(res.data.data.members)
+              } 
+              
+              getProjectTasks(),
+              getActiveProject(),
+              getAllMembers()
+},[selectedProject])
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
 
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-8 flex justify-between">
+        <div>
         <h1 className="text-2xl font-semibold text-slate-900">
           Your Project
         </h1>
         <p className="text-slate-600 mt-1">
           Manage your assigned project and team members
         </p>
+        </div>
+          <div>
+        <label className="text-1.5xl">Select Project : </label>
+        <select className="w-full px-3 py-2 border rounded-md bg-white" 
+        value={selectedProject}
+        onChange={(e)  => setSelectedProject(e.target.value)}
+        > 
+          <option disabled>----</option>
+          {
+              projectMembers.length <= 0 ? 'No projects Yet..' : projectMembers?.map((project)=>{
+                return (
+                    <option value={project._id}>{project.projectName}</option>
+                )
+              })
+          }
+        </select> </div>
       </div>
 
       {/* Project Card */}
@@ -59,10 +87,10 @@ useEffect(()=>{
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-xl font-semibold text-slate-900">
-             {project.projectName}
+             {activeProject.projectName}
             </h2>
             <p className="mt-2 text-slate-600 max-w-xl">
-                {project.projectDesc}
+                {activeProject.projectDesc}
             </p>
           </div>
 
@@ -74,7 +102,7 @@ useEffect(()=>{
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div className="rounded-md bg-slate-100 p-4">
             <p className="text-slate-500">Members</p>
-            <p className="text-lg font-semibold">{project.members?.length <= 0 ? 0 : project.members?.length}</p>
+            <p className="text-lg font-semibold">{activeProject.members?.length <= 0 ? 0 : activeProject.members?.length}</p>
           </div>
 
           <div className="rounded-md bg-slate-100 p-4">
@@ -156,7 +184,7 @@ useEffect(()=>{
           </h4>
 
           <div className="space-y-3">
-            {projectMembers.length <= 0 ? "" : projectMembers.map((projectMember, i) => (
+            {activeProjectMembers.length <= 0 ? "" : activeProjectMembers.map((projectMember, i) => (
               <div
                 key={i}
                 className="flex items-center justify-between rounded-md border p-3 text-sm"

@@ -25,9 +25,9 @@ const getProjects = async (req , res) =>{
 
 const getManagerProject = async (req ,res) =>{
     try{
-        const pro = await projectModel.findOne({manager : req.params.mid}).populate('members')
+        const pro = await projectModel.find({manager : req.params.mid}).populate('members')
         res.status(200).json({ msg : "fetch manager projects" , data : pro })
-    }catch(err) {res.status(500).josn({msg : "internel server error "})}
+    }catch(err) {res.status(500).json({msg : "internel server error "})}
 }
 
 const addMember = async (req, res) =>{
@@ -37,4 +37,11 @@ const addMember = async (req, res) =>{
     } catch(err) {res.status(500).json({msg : "internel server err",err})}
 }
 
-module.exports = {  addProject , getProjects , getManagerProject , addMember}
+const getProjectBypid = async(req,res) =>{
+    try{
+        const response = await projectModel.findOne({_id : req.params.pid}).populate('members')
+        res.status(200).json({msg : "project fetch" , data : response})
+    } catch(err) {res.status(500).json({msg : "server error",err})}
+}
+
+module.exports = {  addProject , getProjects , getManagerProject , addMember , getProjectBypid}
