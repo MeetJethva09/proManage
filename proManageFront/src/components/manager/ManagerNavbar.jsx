@@ -46,7 +46,7 @@ useEffect(()=>{
           Projects
         </Link>
         <Link to = {'/navm/manager-project-tasks'}className="hover:text-slate-900 cursor-pointer">Tasks</Link>
-        <Link to='/navm/manager-create-team' className="hover:text-slate-900 cursor-pointer">Team</Link>
+        <Link to='/navm/manager-teams' className="hover:text-slate-900 cursor-pointer">Team</Link>
         <Link to="/navm/manager-allmembers" className="hover:text-slate-900">
           Members
         </Link>

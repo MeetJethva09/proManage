@@ -11,7 +11,7 @@ export default function ManagerProject() {
      const {register , handleSubmit} = useForm({})
      const [projectTasks , setProjectTasks] = useState([])
      const [projectMembers , setProjectMembers] = useState([])
-     const [selectedProject , setSelectedProject] = useState(null)
+     const [selectedProject , setSelectedProject] = useState("")
     
 
     const getProject = async () =>{

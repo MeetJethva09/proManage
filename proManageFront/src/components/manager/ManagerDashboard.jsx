@@ -4,7 +4,7 @@ import axios from 'axios'
 
 export default function ManagerDashboard() {
   const [recentTask, setRecentTask] = useState([])
-  const [managerProject, setManagerProject] = useState({})
+  const [managerProject, setManagerProject] = useState([])
   
   const id = localStorage.getItem("id")
   const getDashboardData = async ()=>{
@@ -24,7 +24,7 @@ useEffect(()=>{
       {/* Top Execution Stats */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: "Active Projects", value : 'soon' },
+          { label: "Active Projects", value : managerProject.length },
           { label: "Tasks", value: "soon" },
           { label: "Team Members", value: "9" },
           { label: "Due This Week", value: "12" },
@@ -103,21 +103,21 @@ useEffect(()=>{
         {/* Projects */}
         <div className="bg-white p-6 rounded-lg border">
           <p className="font-medium mb-4">Active Projects</p>
-
-          <div className="space-y-2 text-sm">
-           
-          
-              <div
-                
-                className="flex justify-between items-center p-3 border rounded hover:bg-slate-50"
-              >
-                <span>{managerProject?.projectName}</span>
-                <span className="text-xs border px-2 py-0.5 rounded">
-                  {managerProject?.projectDesc}
-                </span>
-              </div>
-          
-          </div>
+                {
+                      managerProject.length <=0 ? "No project yet.." : 
+                      managerProject?.map((project)=>{
+                        return (
+                             <div className="space-y-2 text-sm">
+                            <div className="flex justify-between items-center p-3 border rounded hover:bg-slate-50">
+                              <span>{project?.projectName}</span>
+                              <span className="text-xs border px-2 py-1 rounded">
+                                {project?.projectDesc}
+                              </span>
+                            </div>
+                        </div>
+                        )
+                      })
+                }
         </div>
 
         {/* Team */}

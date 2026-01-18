@@ -32,6 +32,7 @@ import MemberDetail from './components/manager/MemberDetail'
 import AssignTaskToMember from './components/manager/AssignTaskToMember'
 import { ProjectTaskLists } from './components/manager/ProjectTaskLists'
 import { CreateTeam } from './components/manager/CreateTeam'
+import { Teams } from './components/manager/Teams'
 
 
 
@@ -70,6 +71,7 @@ axios.defaults.withCredentials = true;
                   <Route path='manager-task-assign/:id' element={<AssignTaskToMember/>}/>
                   <Route path='manager-project-tasks' element={<ProjectTaskLists/>}/>
                   <Route path='manager-create-team' element={<CreateTeam/>}/>
+                  <Route path='manager-teams' element={<Teams/>}/>
                </Route>
 
                <Route path='/navo' element={<OwnerNavbar/>}>

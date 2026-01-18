@@ -8,11 +8,12 @@ export const CreateTeam = () => {
     const navigate = useNavigate()
 
     const [projectMembers , setProjectMembers] = useState([])
-    const [projects , setProjects] = useState({});
+    const [projects , setProjects] = useState([]);
     const {register , handleSubmit} = useForm({});
 
     const getMembers = async () =>{
         const response = await axios.get("/project/manager-project/"+localStorage.getItem("id"));
+        console.log(response.data.data)
         setProjectMembers(response.data.data.members)
         setProjects(response.data.data)
     }
@@ -110,7 +111,6 @@ useEffect(()=>{
           type="checkbox"
           value={member._id}
           {...register('members')}
-          {...register("members")}
           className="accent-indigo-600"
         />
         
