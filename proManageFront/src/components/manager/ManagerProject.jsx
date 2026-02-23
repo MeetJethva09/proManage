@@ -2,9 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {Link} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 export default function ManagerProject() {
-
+      const navigate = useNavigate()
      const [activeProject, setActiveProject] = useState({});
      const [activeProjectMembers , setActiveProjectMembers] = useState([])
      const [members , setMembers] = useState([])
@@ -17,13 +18,15 @@ export default function ManagerProject() {
     const getProject = async () =>{
         const id = localStorage.getItem("id")
         const res = await axios.get("/project/manager-project/"+id);
-        localStorage.setItem("pid" , res.data.data._id)
         setProjectMembers(res.data.data)    
     }
 
      const submitHandler =async (data) =>{
-        const res = await axios.post("/project/add-members/"+localStorage.getItem("pid"), data.members);
-        getProject();
+        const response = await axios.post("/project/add-members/"+selectedProject, data.members);
+        alert("Members added..")
+          const res = await axios.get("/project/projectbypid/" + selectedProject);
+          setActiveProject(res.data.data);
+          setActiveProjectMembers(res.data.data.members);
      }
 
     const getAllMembers =  async () =>{
@@ -41,14 +44,16 @@ useEffect(()=>{
               };
 
               const getActiveProject = async()=>{
-                const res = await axios.get("/project/projectbypid/"+selectedProject);
+                const res = await axios.get("/project/projectbypid/"+selectedProject);  
                 setActiveProject(res.data.data)
                 setActiveProjectMembers(res.data.data.members)
               } 
-              
+
+              localStorage.setItem("pid" , selectedProject)
               getProjectTasks(),
               getActiveProject(),
               getAllMembers()
+              getProject()
 },[selectedProject])
 
   return (
@@ -67,7 +72,6 @@ useEffect(()=>{
           <div>
         <label className="text-1.5xl">Select Project : </label>
         <select className="w-full px-3 py-2 border rounded-md bg-white" 
-        value={selectedProject}
         onChange={(e)  => setSelectedProject(e.target.value)}
         > 
           <option disabled>----</option>
@@ -169,7 +173,7 @@ useEffect(()=>{
           </div>
 
           <div className="flex items-end">
-            <button className="w-full rounded-md bg-slate-900 py-2 text-sm font-medium text-white hover:bg-slate-800 transition">
+            <button type='submit' className="w-full rounded-md bg-slate-900 py-2 text-sm font-medium text-white hover:bg-slate-800 transition">
               Add to Project
             </button>
           </div>

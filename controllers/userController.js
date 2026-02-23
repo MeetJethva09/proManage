@@ -181,7 +181,7 @@ const getManagers = async (req , res) =>{
 
 }
 
-const getMembers = async (req , res) =>{
+const getMembers = async (req , res) =>{  
     try{
         const members = await userModel.find({role : "Member"}) 
         res.status(200).json({ msg : "manager fetch" , data : members});

@@ -7,7 +7,7 @@ const workspaceSchema = new mongoose.Schema({
     },
     workspaceDesc : {
         type : String,
-        required : true,
+        required : true, 
     },
     createdBy : {
         type : mongoose.Schema.Types.ObjectId,

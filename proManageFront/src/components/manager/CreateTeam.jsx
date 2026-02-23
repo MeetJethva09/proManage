@@ -7,14 +7,13 @@ import { useNavigate } from 'react-router-dom'
 export const CreateTeam = () => {
     const navigate = useNavigate()
 
+    const [ activeProjectId , setActiveProjectId ] = useState(null)
     const [projectMembers , setProjectMembers] = useState([])
     const [projects , setProjects] = useState([]);
     const {register , handleSubmit} = useForm({});
 
     const getMembers = async () =>{
         const response = await axios.get("/project/manager-project/"+localStorage.getItem("id"));
-        console.log(response.data.data)
-        setProjectMembers(response.data.data.members)
         setProjects(response.data.data)
     }
 
@@ -40,7 +39,14 @@ export const CreateTeam = () => {
     
 useEffect(()=>{
     getMembers()
-},[])
+    if(!activeProjectId) return;
+
+    const getActiveProjectMembers = async () =>{
+      const res = await axios.get("/project/projectbypid/"+activeProjectId);
+      setProjectMembers(res.data.data.members)
+    }
+    getActiveProjectMembers()
+},[activeProjectId])
 
   return (
     <>
@@ -71,6 +77,7 @@ useEffect(()=>{
     <input
       type="text"
       {...register('teamName')}
+      required
       placeholder="Enter team name"
       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
     />
@@ -81,10 +88,17 @@ useEffect(()=>{
     <label className="block text-sm text-slate-600 mb-1">
       Project
     </label>
-    <select {...register('project')} className="w-full px-3 py-2 border rounded-md bg-white">
+    <select {...register('project')} className="w-full px-3 py-2 border rounded-md bg-white"
+    onChange={(e) => setActiveProjectId(e.target.value)}
+    required > 
       <option disabled>Select project</option>
-
-       <option value={projects._id}>{projects.projectName}</option>
+    {
+      projects?.map((project)=>{
+        return (
+          <option value={project._id}>{project.projectName}</option>
+        )
+      })
+    }
     </select>
   </div>
 
@@ -115,7 +129,6 @@ useEffect(()=>{
         />
         
         <span className="text-slate-700">
-          {/* {user.name} ({user.email}) */}
           {member.username} 
         </span>
       </label>
