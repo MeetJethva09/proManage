@@ -1,8 +1,8 @@
 const express = require("express")
 const app = express()
 const cors = require("cors")
-require("dotenv").config()
-
+require("dotenv").config() 
+ 
 const dbConnection = require("./config/dbConnection")
 const userRoutes = require("./routes/userRoutes")
 const taskRoutes = require("./routes/taskRoutes")
@@ -16,7 +16,7 @@ app.use(cors({
     credentials : true
 }))
 
-app.use(cookieParser())
+app.use(cookieParser()) 
 
 //Parsing json data
 app.use(express.json());

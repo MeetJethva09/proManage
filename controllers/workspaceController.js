@@ -1,6 +1,5 @@
 const workspaceModel = require("../models/workspaceModel")
 
-
 const addWorkspace = async (req ,res) =>{
     try{
         const addWorkSpace = await workspaceModel.create(req.body);

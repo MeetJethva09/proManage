@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: ./
+    container_name: server_con
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+    dns:
+      - 8.8.8.8  #Google dns server 
+      - 1.1.1.1  #cloudflare dns server
+    restart: always
+
+  frontend:
+    build: ./proManageFront
+    container_name: client_con
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: always

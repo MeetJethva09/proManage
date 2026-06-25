@@ -15,7 +15,6 @@ useEffect(()=>{
 
   return (
     <div>
-
               <main className="p-6 bg-slate-50 min-h-screen">
 
       {/* Header */}
@@ -29,9 +28,9 @@ useEffect(()=>{
           </p>
         </div>
 
-        <button className="px-4 py-2 text-sm rounded-md bg-slate-900 text-white hover:bg-slate-800 transition">
+        {/* <button className="px-4 py-2 text-sm rounded-md bg-slate-900 text-white hover:bg-slate-800 transition">
           + Add User
-        </button>
+        </button> */}
       </div>
 
       {/* Stats */}
